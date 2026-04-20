@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './module/auth/auth.module';
 // import { ArticleModule } from './article/article.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Auth } from './module/auth/entities/auth.entity';
 
 
 @Module({
@@ -15,7 +16,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: "postgres",
       database: String(process.env.DB_NAME as string),
       password: String(process.env.DB_PASSWORD as string),
-      entities: [],
+      entities: [Auth],
       synchronize: true,
       logging: false
     }),
