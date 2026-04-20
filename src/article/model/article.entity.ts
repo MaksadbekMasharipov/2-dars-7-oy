@@ -1,5 +1,5 @@
 import { Table, Column, Model, DataType, ForeignKey, AllowNull, BelongsTo } from 'sequelize-typescript';
-import { Auth } from 'src/auth/model/auth.entity';
+import { Auth } from 'src/auth/entities/auth.entity';
 
 @Table({ tableName: 'article', timestamps: true })
 export class Article extends Model<Article> {
