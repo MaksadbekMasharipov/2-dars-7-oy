@@ -13,7 +13,7 @@ async function bootstrap() {
     transform: true,  // DTOga mos kelmaydigan malumotlarni olib tashlaydi va xatolik beradi
   }));
 
-  // Swagger
+  // Swaggerni ishga tushirish
   const config = new DocumentBuilder()
     .setTitle('Article Project')
     .setDescription('Article description')
@@ -24,7 +24,9 @@ async function bootstrap() {
 
   const PORT = process.env.PORT || 3000
   await app.listen(PORT, () => {
-    console.log("Server is running at: " + PORT);
+    console.log(`Root api for project: http://localhost:${PORT}`,);
+    console.log(`Root api for project: http://localhost:${PORT}/api-docs`);
+    
     
   });
 }

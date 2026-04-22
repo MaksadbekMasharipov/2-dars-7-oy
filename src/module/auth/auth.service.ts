@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import nodemailer from 'nodemailer';
 import { VerifyDto } from './dto/verify.dto';
 import { JwtService } from '@nestjs/jwt';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -79,5 +80,39 @@ export class AuthService {
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
+  }
+
+
+    async login(loginDto: LoginDto) {
+    const { email, password } = loginDto;
+
+    const foundedUser = await this.authRepo.findOne({where: {email: email}});
+    if (!foundedUser) {
+      throw new BadRequestException('User not found');
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, foundedUser.password);
+
+    if (isPasswordValid) {
+      const otp = Array.from({ length: 6 }, () => Math.floor(Math.random() * 10)).join('');
+      const time = Date.now() + 120000; // OTPning amal qilish vaqti (2 daqiqa)
+
+      foundedUser.otp = otp;
+      foundedUser.otpTime = time;
+      await this.authRepo.save(foundedUser);
+
+      await this.nodemailer.sendMail({
+        from: "maksadbekmasharipov@gmail.com",
+        to: email,
+        subject: "OTP for login",
+        text: `Your OTP is: ${otp}`,
+        html: `<p>Your OTP is: <b>${otp}</b></p>`,
+      });
+
+      await this.authRepo.update(foundedUser.id, {otp, otpTime: time});
+
+    return {message: "Please check your email for the OTP."};
+  }else{
+    return {message: "Wrong password."};
   }
 }
