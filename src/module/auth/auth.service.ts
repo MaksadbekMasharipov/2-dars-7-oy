@@ -7,11 +7,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import nodemailer from 'nodemailer';
 import { VerifyDto } from './dto/verify.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   private nodemailer: nodemailer.Transporter;
-  constructor(@InjectRepository(Auth) private authRepo: Repository<Auth>) {
+  constructor(@InjectRepository(Auth) private authRepo: Repository<Auth>,
+  private jwtService: JwtService
+  ) {
     this.nodemailer = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -71,6 +74,10 @@ export class AuthService {
     user.otpTime = 0;
     await this.authRepo.save(user);
 
-    return {message: "OTP verified successfully."};
+
+    const payload = {  username: user.username, role: user.role};
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
   }
 }
