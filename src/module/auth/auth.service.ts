@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Body, Injectable } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { Auth } from './entities/auth.entity';
@@ -26,6 +26,8 @@ export class AuthService {
   }  // data base bilan bog'lab beradi va nodemailer ni sozlaydi
 
   
+
+    // register
   async register(createAuthDto: CreateAuthDto) {
     const { username, email, password } = createAuthDto;
 
@@ -55,6 +57,7 @@ export class AuthService {
   }
 
 
+    // verify
   async verify(dto: VerifyDto) {
     const { email, otp } = dto;
 
@@ -82,7 +85,7 @@ export class AuthService {
     };
   }
 
-
+    // login
     async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
 
@@ -114,5 +117,6 @@ export class AuthService {
     return {message: "Please check your email for the OTP."};
   }else{
     return {message: "Wrong password."};
+  }
   }
 }

@@ -8,4 +8,7 @@ export class Article extends BaseEntity {
 
   @Column()
   content!: string;
+
+  @Column()
+  backgroundImge!: string;
 }
