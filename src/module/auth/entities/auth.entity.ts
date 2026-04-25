@@ -1,7 +1,9 @@
 
 import { BaseEntity } from 'src/database/entities/base.entity';
+import { Article } from 'src/module/article/entities/article.entity';
+import { Tag } from 'src/module/tag/entities/tag.entity';
 import { Roles } from 'src/shared/enums/roles.enum';
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 
 @Entity({name: 'auth'})
@@ -25,4 +27,11 @@ export class Auth extends BaseEntity{
   @Column({type: 'bigint'})
   otpTime!: number;
 
+  // relations
+  @OneToMany(() => Article, (article) => article.author,)
+  articles!: Article[]
+
+  @OneToMany(() => Tag, (tag) => tag.createdBy, { nullable: false })
+  @JoinColumn({name: "tag_id"})
+  tags!: Tag[]
 }
